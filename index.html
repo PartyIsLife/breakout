@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title></title>
+    <script src="phaser.min.js"></script>
+</head>
+<style>
+</style>
+<body>
+<script>
+    var padle;
+    var ball;
+    var kirpi4;
+    var kirpi41;
+    var kirpi42;
+    var cursor;
+    var bricks;
+    var game = new Phaser.Game(
+            480, 320, Phaser.CANVAS, null, {preload:preload, create:create, update:update});
+        function preload() {
+        game.load.image('paddle','gg.png'); // доска
+        game.load.image('fon','bg.jpg');// фон
+        game.load.image('o1','p1.png');//ОБЬЕКТЫ
+        game.load.image('o2','p2.png');//ОБЬЕКТЫ
+        game.load.image('o3','p3.png');//ОБЬЕКТЫ
+        game.load.image('ballz','ball.png')// шарик
+
+        }
+
+        function create() {
+            game.physics.startSystem(Phaser.Physics.ARCADE);
+
+        game.add.tileSprite(1,1,game.width,game.height,'fon');//фон
+
+        /*kirpi4 = game.add.sprite(0,0,'o1');//кирпич 1
+        kirpi4.anchor.set(0.5);
+        /* kirpi41 = game.add.sprite(kirpi4.width,0,'o2');//кирпич2
+        kirpi41.anchor.set(0.5);
+         kirpi42 = game.add.sprite(kirpi41.width + kirpi4.width,0,'o3');//кирпич3
+        kirpi42.anchor.set(0.5);*/
+
+        ball = game.add.sprite(240,280,'ballz');//шарик
+        ball.anchor.set(0.5);
+        game.physics.enable(ball,Phaser.Physics.ARCADE);
+        ball.body.velocity.set(150,150);
+        ball.body.collideWorldBounds = true;
+        ball.body.bounce.set(1);
+
+        padle = game.add.sprite(240,300,'paddle');//доска
+        padle.anchor.set(0.5);
+        game.physics.enable(padle,Phaser.Physics.ARCADE);
+        padle.body.immovable = true;
+
+
+
+
+        zbricks()
+
+        }
+        function update() {
+        game.physics.arcade.collide(ball, padle);
+        padle.x = game.input.x || game.world.width * 0.5
+
+        }
+
+       function zbricks() {
+            bricks = game.add.group;
+            for(i=0;i<3;i++){
+                for (i1=0;i1<5;i1++){
+                    kirpi4 = game.add.sprite(i1*130,i*70,'o1');
+                }
+            }
+
+        }
+
+
+
+</script>
+<img src="p1"
+</body>
+</html>
