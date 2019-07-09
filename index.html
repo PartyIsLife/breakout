@@ -1,13 +1,35 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta charset="UTF-8">
     <title></title>
     <script src="phaser.min.js"></script>
 </head>
 <style>
+    .div1 {
+        display: none ;
+        width: 410px;
+        height:250px;
+        background-color: darkgrey;
+        position: fixed;
+        top: 40px;
+        left:40px;
+    }
+    .div2{
+        display: flex;
+       margin-top: 110px;
+        margin-left: 145px;
+    }
 </style>
 <body>
+<div class="div1" id="1z" style="display: none">
+<div class="div2" id="2z" style="display: none">
+Вы Проиграли!
+</div>
+</div>
+
+
 <script>
     var padle;
     var ball;
@@ -16,20 +38,22 @@
     var kirpi42;
     var cursor;
     var bricks;
+    var score = 0;
+    var text;
     var game = new Phaser.Game(
-            480, 320, Phaser.CANVAS, null, {preload:preload, create:create, update:update});
+            window.innerWidth, window.innerHeight, Phaser.CANVAS, null, {preload:preload, create:create, update:update});
         function preload() {
         game.load.image('paddle','gg.png'); // доска
         game.load.image('fon','bg.jpg');// фон
         game.load.image('o1','p1.png');//ОБЬЕКТЫ
         game.load.image('o2','p2.png');//ОБЬЕКТЫ
         game.load.image('o3','p3.png');//ОБЬЕКТЫ
-        game.load.image('ballz','ball.png')// шарик
-
+        game.load.spritesheet('ballz', 'anim.png', 24,24)// шарик
         }
 
         function create() {
             game.physics.startSystem(Phaser.Physics.ARCADE);
+            game.physics.arcade.checkCollision.down = false;
 
         game.add.tileSprite(1,1,game.width,game.height,'fon');//фон
 
@@ -40,12 +64,20 @@
          kirpi42 = game.add.sprite(kirpi41.width + kirpi4.width,0,'o3');//кирпич3
         kirpi42.anchor.set(0.5);*/
 
-        ball = game.add.sprite(240,280,'ballz');//шарик
+        ball = game.add.sprite(game.width / 2,270,'ballz');//шарик
         ball.anchor.set(0.5);
         game.physics.enable(ball,Phaser.Physics.ARCADE);
         ball.body.velocity.set(150,150);
         ball.body.collideWorldBounds = true;
         ball.body.bounce.set(1);
+        ball.body.collideWorldBounds = true;
+        ball.checkWorldBounds = true; // Функция проигрыша
+        ball.events.onOutOfBounds.add(function () {
+            document.getElementById('1z').style.display = 'block';
+            document.getElementById('2z').style.display = 'block';
+        },this);
+        ball.animations.add('animation',[0,1,2,3,4,5,4,3,2,1,0], 30);
+
 
         padle = game.add.sprite(240,300,'paddle');//доска
         padle.anchor.set(0.5);
@@ -53,30 +85,51 @@
         padle.body.immovable = true;
 
 
-
-
-        zbricks()
+        zbricks();
+text = game.add.text(game.width - 30, 20, '0');
 
         }
         function update() {
         game.physics.arcade.collide(ball, padle);
+       game.physics.arcade.collide(ball, bricks, breakkirpi4);
         padle.x = game.input.x || game.world.width * 0.5
 
         }
 
        function zbricks() {
-            bricks = game.add.group;
+            bricks = game.add.group();
+
             for(i=0;i<3;i++){
-                for (i1=0;i1<5;i1++){
+                for (i1=0;i1<6;i1++){
                     kirpi4 = game.add.sprite(i1*130,i*70,'o1');
+                    game.physics.enable(kirpi4, Phaser.Physics.ARCADE);
+                   kirpi4.body.immovable = true;
+                    bricks.add(kirpi4);
                 }
             }
 
+        }
+        function breakkirpi4(ball, brick) {
+            brick.kill();
+            score = score + 1;
+            text.text = score;
+            ball.animations.play('animation');
+            document.getElementById('9').play();
+
+            win1();
+
+            }
+        function win1() {
+            if(score == 12){
+            document.getElementById('2z').innerHTML = 'Вы Выйграли!';
+            document.getElementById('1z').style.display = 'block';
+            document.getElementById('2z').style.display = 'block';
+            }
         }
 
 
 
 </script>
-<img src="p1"
+<audio src="zvuk.mp3" id="9"></audio>
 </body>
 </html>
